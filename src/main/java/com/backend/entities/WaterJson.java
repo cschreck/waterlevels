@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Project: waterlevels
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Water {
+public class WaterJson {
 
     public String shortname;
     public String longname;

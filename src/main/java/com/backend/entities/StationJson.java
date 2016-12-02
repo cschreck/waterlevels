@@ -8,9 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Project: DataRun-WaterLevels
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Station {
-
-
+public class StationJson {
 
     public String uuid;
     public String number;
@@ -20,9 +18,7 @@ public class Station {
     public String agency;
     public double longitude;
     public double latitude;
-    public Water water;
-
-
+    public WaterJson water;
 
 
     public String getUuid() {
@@ -89,11 +85,11 @@ public class Station {
         this.latitude = latitude;
     }
 
-    public Water getWater() {
+    public WaterJson getWater() {
         return water;
     }
 
-    public void setWater(Water water) {
+    public void setWater(WaterJson water) {
         this.water = water;
     }
 

@@ -1,5 +1,6 @@
 package com.backend;
 
+import com.backend.fetch.ScheduledStationFetch;
 import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineParameter;
 import de.wsv.pegelonline.webservices.version2_3.api.PegelonlinePegelinformation;
 import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineWebservicePortType;
@@ -22,7 +23,11 @@ import java.rmi.RemoteException;
 public class Main {
     public static void main(String[] args){
         SpringApplication.run(Main.class, args);
+        ScheduledStationFetch fetch = new ScheduledStationFetch();
+        fetch.getMessStellenAndWater();
     }
+
+
 
 
 }

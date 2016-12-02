@@ -2,17 +2,14 @@ package com.backend.fetch;
 
 import java.text.SimpleDateFormat;
 
-import com.backend.entities.Messstelle;
-import com.backend.entities.MessstelleRepository;
-import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineMessstelle;
-import de.wsv.pegelonline.webservices.version2_3.api.PegelonlinePegelinformation;
-import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineWebservicePortType;
-import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineWebservice_Impl;
+import com.backend.entities.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by masc on 02.12.2016.
@@ -24,43 +21,44 @@ public class ScheduledStationFetch {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     @Autowired
-    private MessstelleRepository repository;
+    private StationRepository stationRepo;
+    @Autowired
+    private WaterRepository waterRepository;
 
-    @Scheduled(fixedRate = 1000*60)
-    public void getMessStellen() {
+    @Scheduled(fixedRate = 1000*10000)
+    public void getMessStellenAndWater() {
+        RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper mapper = new ObjectMapper();
 
-        try {
-            PegelonlineWebservicePortType port =
-                    new PegelonlineWebservice_Impl().getPegelonlineWebservicePort();
+        String jsonStationsEndpoint = "http://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json";
 
-            PegelonlineMessstelle[] messstellen  = port.getMessstellenList(null, null);
+        StationJson[] stations = restTemplate.getForObject(
+                jsonStationsEndpoint,
+                StationJson[].class);
 
-            PegelonlinePegelinformation[] pi =
-                    port.getPegelinformationen(null, null, new String[] {"TRUNSTADT"});
+        for (StationJson stat : stations){
+            /**
+            WaterEntity water = new WaterEntity(stat.getWater().longname, stat.getWater().shortname);
+            waterRepository.save(water);
+            */
 
-            //Ausgabe der aktuellen Messung der Messstelle TRUNSTADT für alle Parameter
-            for (int i = 0; i < pi.length; i++) {
-                //System.out.println(pi[i].getPegelonlineKoordinate().getHochwert().toString());
-                //System.out.println(pi[i].getPegelonlineKoordinate().getRechtswert().toString());
-                //System.out.println(pi[i].getPegelonlineMessstelle().getName());
-            }
+            StationEntity stationEnt = new StationEntity(
+                    stat.getUuid(),
+                    stat.getNumber(),
+                    stat.getShortname(),
+                    stat.getLongname(),
+                    stat.getKm(),
+                    stat.getAgency(),
+                    stat.getLongitude(),
+                    stat.getLatitude()
+            );
 
-            for (PegelonlineMessstelle messstelle: messstellen){
-              //  log.info(messstelle.getName());
-                System.out.println(messstelle.getName());
-            }
+            log.info(stationEnt.toString());
 
-
-        }catch (Exception e){
+            stationRepo.save(stationEnt);
 
         }
 
-
-        repository.save(new Messstelle("a", "b"));
-
-        for(Messstelle mess : repository.findAll()){
-          //  log.info(mess.toString());
-        }
 
 
     }
