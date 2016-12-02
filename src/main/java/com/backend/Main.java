@@ -19,36 +19,6 @@ import java.rmi.RemoteException;
 @SpringBootApplication
 public class Main {
     public static void main(String[] args){
-        SpringApplication.run(Main.class, args);
 
-        PegelonlineWebservicePortType port =
-                new PegelonlineWebservice_Impl().getPegelonlineWebservicePort();
-
-        //Abfrage getParameterList: Alle in Pegelonline Webservice-Aktuell enthaltenden Parameter
-        //werden zurückgeliefert
-        //Bei PegelonlineParameter handelt es sich um einen custom-type aus Pegelonline Webservice-Aktuell
-        try{
-            PegelonlineParameter[] par = new PegelonlineParameter[0];
-            par = port.getParameterList();
-
-            //Ausgabe der Parameternamer
-
-                PegelonlinePegelinformation[] pi =
-            port.getPegelinformationen(null, null, new String[] {"EITZE"});
-
-                //Ausgabe der aktuellen Messung der Messstelle TRUNSTADT für alle Parameter
-                for (int x = 0; x < pi.length; x++) {
-                    System.out.println(
-                            "Letzte Messung vom " +
-                                    pi[x].getPegelonlineAktuelleMessung().getZeitpunkt().getTime() +
-                                    " mit dem Wert " + pi[x].getPegelonlineAktuelleMessung().getMesswert() +
-                                    " für den Parameter " + pi[x].getPegelonlineParameter().getName());
-                    System.out.println();
-                }
-
-
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 }
