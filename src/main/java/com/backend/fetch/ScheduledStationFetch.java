@@ -1,13 +1,9 @@
 package com.backend.fetch;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import com.backend.db.Messstelle;
-import com.backend.db.MessstelleRepository;
-import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineMessstelle;
-import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineWebservicePortType;
-import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineWebservice_Impl;
+import com.backend.entities.Messstelle;
+import com.backend.entities.MessstelleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

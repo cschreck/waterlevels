@@ -1,5 +1,6 @@
 package com.backend.serve;
 
+import com.backend.entities.Station;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -16,21 +17,16 @@ import org.springframework.web.client.RestTemplate;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ServeController {
 
-    @RequestMapping("/waterlevels")
-    public double[] waterlevels() {
+    @RequestMapping("/stations")
+    public Station[] serveWaterlevels() {
 
         RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper mapper = new ObjectMapper();
 
-        Object object = restTemplate.getForObject("http://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json", Object.class);
-        System.out.println(object.toString());
-
-        //ObjectMapper mapper = new ObjectMapper();
-
-        //Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
-
-
-        return null;
+        Station[] stations = restTemplate.getForObject("http://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json", Station[].class);
+        return stations;
     }
+
 
 
 }

@@ -1,4 +1,4 @@
-package com.backend.db;
+package com.backend.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;

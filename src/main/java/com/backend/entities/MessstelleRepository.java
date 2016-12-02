@@ -1,4 +1,4 @@
-package com.backend.db;
+package com.backend.entities;
 
 import org.springframework.data.domain.*;
 import org.springframework.data.repository.*;
