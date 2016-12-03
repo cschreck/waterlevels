@@ -19,6 +19,7 @@ public class StationJson {
     public double longitude;
     public double latitude;
     public WaterJson water;
+    public Timeseries[] timeseries;
 
 
     public String getUuid() {

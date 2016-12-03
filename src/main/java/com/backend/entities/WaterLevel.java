@@ -15,15 +15,15 @@ public class WaterLevel implements Comparator<WaterLevel>{
     public int value;
     public double longitude;
     public double latitude;
-    public String name;
+    public String number;
 
 
-    public String getName() {
-        return name;
+    public String getNumber() {
+        return number;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
 
