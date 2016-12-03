@@ -5,9 +5,11 @@ import com.backend.entities.WaterLevel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.invoke.MethodType;
 import java.util.ArrayList;
 
 /**
@@ -30,7 +32,7 @@ public class ServeController {
         return stations;
     }
 
-    @RequestMapping("/waterlevels")
+    @RequestMapping(value = "/waterlevels", method = RequestMethod.POST)
     public ArrayList<WaterLevel> serveWaterLevels(){
         RestTemplate restTemplate = new RestTemplate();
         StationJson[] stations = restTemplate.getForObject("http://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json", StationJson[].class);
