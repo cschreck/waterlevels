@@ -4,6 +4,10 @@ import com.backend.entities.StationJson;
 import com.backend.entities.WaterLevel;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.wsv.pegelonline.webservices.version2_3.api.PegelonlinePegelinformation;
+import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineWebservicePortType;
+import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineWebservice_Impl;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,12 +47,8 @@ public class ServeController {
 
             waterJSONS.add("http://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/"+stations[i].getShortname()+"/W/measurements.json?start=P0DT0H20M");
         }
-        String test = "";
         for(int i = 0; i< waterJSONS.size();i++) {
-
             try {
-
-                //test = waterJSONS.get(i);
 
                 WaterLevel [] water = restTemplate.getForObject(waterJSONS.get(i), WaterLevel[].class);
                 for (int j = 0; j < water.length; j++) {
@@ -65,12 +65,44 @@ public class ServeController {
                 i++;
             }
         }
-
         Collections.sort(waterLevels, (o1, o2) -> Double.valueOf(o1.getLatitude()).compareTo(Double.valueOf(o2.getLatitude())));
-
         return waterLevels;
     }
 
+    @RequestMapping(value = "/temperatures", method = RequestMethod.POST)
+    public ArrayList<String[]> serveTemperatures() {
 
+        ArrayList<String[]> result = new ArrayList<>();
+        RestTemplate restTemplate = new RestTemplate();
+        String jsonStationsEndpoint = "http://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json";
+
+        StationJson[] stations = restTemplate.getForObject(
+                jsonStationsEndpoint,
+                StationJson[].class);
+
+        PegelonlineWebservicePortType port =
+                new PegelonlineWebservice_Impl().getPegelonlineWebservicePort();
+
+        for(int i = 0; i<stations.length; i++) {
+            String [] temp = new String[2];
+            try {
+                PegelonlinePegelinformation[] pi =
+                        port.getPegelinformationen(null, null, new String[]{stations[i].getShortname()});
+
+
+                for (int x = 0; x < pi.length; x++) {
+                    if (pi[x].getPegelonlineParameter().getName().equals("WASSERTEMPERATUR")) {
+                        temp[0] = pi[x].getPegelonlineMessstelle().getName();
+                        temp[1] = pi[x].getPegelonlineAktuelleMessung().getMesswert().toString();
+                        result.add(temp);
+                    }
+
+                }
+            }catch(Exception e){
+
+            }
+        }
+    return  result;
+    }
 
 }

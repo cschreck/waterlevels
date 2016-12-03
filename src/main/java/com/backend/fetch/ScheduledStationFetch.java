@@ -63,7 +63,7 @@ public class ScheduledStationFetch {
                         //System.out.println(water[0].getValue());
                      //   break;
                    // }
-                    PegelonlineWebservicePortType port =
+                   /* PegelonlineWebservicePortType port =
                             new PegelonlineWebservice_Impl().getPegelonlineWebservicePort();
 
                     PegelonlinePegelinformation[] pi =
@@ -73,14 +73,14 @@ public class ScheduledStationFetch {
 
 
                 for(int x=0; x < pi.length; x++){
-                       //if(pi[x].getPegelonlineParameter().getNumber().equals("PEGELNULLWERT")){
-                           //System.out.println(stations[i].getShortname());
-                           //System.out.println(pi[x].getPegelonlineParameter().getName());
-                           //System.out.println();
-                           //System.out.println();
-                       //}
+                       if(pi[x].getPegelonlineParameter().getName().equals("WASSERTEMPERATUR")){
+                           System.out.println(stations[i].getShortname());
+                           System.out.println(pi[x].getPegelonlineParameter().getName());
+                           System.out.println();
+                           System.out.println();
+                       }
 
-                }
+                }*/
 
                 //}
             }catch (Exception e) {
