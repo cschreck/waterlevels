@@ -1,14 +1,22 @@
 package com.backend.fetch;
 
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import com.backend.entities.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineParameter;
+import de.wsv.pegelonline.webservices.version2_3.api.PegelonlinePegelinformation;
+import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineWebservicePortType;
+import de.wsv.pegelonline.webservices.version2_3.api.PegelonlineWebservice_Impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -25,38 +33,60 @@ public class ScheduledStationFetch {
     @Autowired
     private WaterRepository waterRepository;
 
-    @Scheduled(fixedRate = 1000*10000)
+    public ArrayList<String> waterJSONS = new ArrayList<>();
+
     public void getMessStellenAndWater() {
+
+
         RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper mapper = new ObjectMapper();
 
         String jsonStationsEndpoint = "http://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json";
 
         StationJson[] stations = restTemplate.getForObject(
                 jsonStationsEndpoint,
                 StationJson[].class);
+        for (int i = 0; i < stations.length; i++){
 
-        for (StationJson stat : stations){
-            /**
-            WaterEntity water = new WaterEntity(stat.getWater().longname, stat.getWater().shortname);
-            waterRepository.save(water);
-            */
+            waterJSONS.add("http://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/"+stations[i].getShortname()+"/W/measurements.json?start=P0DT0H20M");
+        }
+        String test = "";
+        for(int i = 0; i< waterJSONS.size();i++) {
 
-            StationEntity stationEnt = new StationEntity(
-                    stat.getUuid(),
-                    stat.getNumber(),
-                    stat.getShortname(),
-                    stat.getLongname(),
-                    stat.getKm(),
-                    stat.getAgency(),
-                    stat.getLongitude(),
-                    stat.getLatitude()
-            );
+            try {
 
-            log.info(stationEnt.toString());
+                //test = waterJSONS.get(i);
 
-            stationRepo.save(stationEnt);
+                //WaterLevel[] water = restTemplate.getForObject(waterJSONS.get(i), WaterLevel[].class);
+                //for (int j = 0; j < water.length; j++) {
+                    //if (j < 1) {
+                        //System.out.println("Station: " + stations[i].getShortname() + " Wasserstand: " + water[0].getValue());
+                        //System.out.println(water[0].getValue());
+                        break;
+                   // }
+                   /* PegelonlineWebservicePortType port =
+                            new PegelonlineWebservice_Impl().getPegelonlineWebservicePort();
 
+                    PegelonlinePegelinformation[] pi =
+                            port.getPegelinformationen(null, null, new String[] {stations[i].getShortname()});
+
+
+
+
+                for(int x=0; x < pi.length; x++){
+                       //if(pi[x].getPegelonlineParameter().getName().equals("WASSERTEMPERATUR ROHDATEN")){
+                           System.out.println(stations[i].getShortname());
+                           System.out.println(pi[x].getPegelonlineParameter().getName());
+                           System.out.println();
+                           System.out.println();
+                      // }
+
+                }*/
+
+                //}
+            }catch (Exception e) {
+               // System.out.println(test);
+                //e.printStackTrace();
+            }
         }
 
 
